@@ -65,13 +65,23 @@ void WilapPost::updateData()
         m_array = m_jsondoc.object()["latest_posts"].toArray();
     }
     m_title = m_array[m_id].toObject()["topic_html_title"].toString();
+    m_title.replace("&amp;", "&");
     emit titleChanged();
     m_user = m_array[m_id].toObject()["username"].toString();
     emit userChanged();
     m_text = m_array[m_id].toObject()["raw"].toString();
+    m_text.replace("&amp;", "&");
+    if(m_text.isEmpty())
+    {
+        m_id++;
+        updateData();
+        return;
+    }
     emit textChanged();
     m_avatarUrl = m_array[m_id].toObject()["avatar_template"].toString().replace("{size}", "45");
     emit avatarUrlChanged();
+
+    qDebug() << "showing data ID" << m_id;
 }
 
 
